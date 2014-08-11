@@ -146,13 +146,13 @@ for control_Index = 1:10
                 % [result,index]=sort(abs(lat_12(:) - temp_Lat) + abs(lon_12(:) - temp_Lon));
                 % calculate distance of 4 neighbour points
                 neighbour_Index{i, j} = index(1:4, 1);
-                distance = zeros(1,4);
+                inverseDistance = zeros(1,4);
                 for k = 1:4
-                    distance(1,k) = sum((m_ll2xy(sat_Lon(i, j), sat_Lat(i, j)) - m_ll2xy(lon_12(index(k)), lat_12(index(k)))) .^ 2);
+                    inverseDistance(1,k) = 1 / sum((m_ll2xy(sat_Lon(i, j), sat_Lat(i, j)) - m_ll2xy(lon_12(index(k)), lat_12(index(k)))) .^ 2);
                 end
-                sum_Distance = sum(distance);
+                sum_Distance = sum(inverseDistance);
                 for k = 1:4
-                    model_Compare(i, j) = model_Compare(i, j) + ice_Mean_12(index(k)) * distance(1, k) / sum_Distance;
+                    model_Compare(i, j) = model_Compare(i, j) + ice_Mean_12(index(k)) * inverseDistance(1, k) / sum_Distance;
                 end
                 flag = flag + 1;
                 disp(['Valid',num2str(flag),': ',num2str(model_Compare(i, j))]);
@@ -193,13 +193,13 @@ for control_Index = 1:10
                 % [result,index]=sort(abs(lat(:) - temp_Lat) + abs(lon(:) - temp_Lon));
                 % calculate distance of 4 neighbour points
                 neighbour_Index{i, j} = index(1:4, 1);
-                distance = zeros(1,4);
+                inverseDistance = zeros(1,4);
                 for k = 1:4
-                    distance(1,k) = sum((m_ll2xy(sat_Lon(i, j), sat_Lat(i, j)) - m_ll2xy(lon_4(index(k)), lat_4(index(k)))) .^ 2);
+                    inverseDistance(1,k) = 1 / sum((m_ll2xy(sat_Lon(i, j), sat_Lat(i, j)) - m_ll2xy(lon_4(index(k)), lat_4(index(k)))) .^ 2);
                 end
-                sum_Distance = sum(distance);
+                sum_Distance = sum(inverseDistance);
                 for k = 1:4
-                    model_Compare(i, j) = model_Compare(i, j) + ice_Mean_4(index(k)) * distance(1, k) / sum_Distance;
+                    model_Compare(i, j) = model_Compare(i, j) + ice_Mean_4(index(k)) * inverseDistance(1, k) / sum_Distance;
                 end
                 flag = flag + 1;
                 disp(['Valid',num2str(flag),': ',num2str(model_Compare(i, j))]);

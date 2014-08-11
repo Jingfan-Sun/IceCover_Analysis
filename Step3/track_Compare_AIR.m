@@ -87,20 +87,20 @@ for i = 1: length-1
         iceC(tmask_4 == 0) = NaN;
         % Find neighbour grid points
         [result,index]=sort((lat_4(:) - lat_Temp(j)).*(lat_4(:) - lat_Temp(j)) + (lon_4(:) - lon_Temp(j)).*(lon_4(:) - lon_Temp(j)));
-        distance = zeros(1,4);
+        inverseDistance = zeros(1,4);
         for k = 1:4
             if(~isnan(iceC(index(k))))
-                distance(1,k) = sum((m_ll2xy(lon_Temp(j), lat_Temp(j)) - m_ll2xy(lon_4(index(k)), lat_4(index(k)))) .^ 2);
+                inverseDistance(1,k) = 1 / sum((m_ll2xy(lon_Temp(j), lat_Temp(j)) - m_ll2xy(lon_4(index(k)), lat_4(index(k)))) .^ 2);
             else
-                distance(1,k) = 0;
+                inverseDistance(1,k) = 0;
             end
         end
-        sum_Distance = sum(distance);
+        sum_Distance = sum(inverseDistance);
         ANHA4_range_down(j) = 0;
         ANHA4_range_up(j) = 10;
         for k = 1:4
-            if(distance(1,k) ~= 0)
-                track_ANHA4(j) = track_ANHA4(j) + iceC(index(k)) * distance(1, k) / sum_Distance;
+            if(inverseDistance(1,k) ~= 0)
+                track_ANHA4(j) = track_ANHA4(j) + iceC(index(k)) * inverseDistance(1, k) / sum_Distance;
             end
             % Calculate the up and down range of the model output
             if(iceC(index(k)) > ANHA4_range_down(j))
@@ -141,20 +141,20 @@ for i = 1: length-1
         iceC(tmask_12 == 0) = NaN;
         % Find neighbour grid points
         [result,index]=sort((lat_12(:) - lat_Temp(j)).*(lat_12(:) - lat_Temp(j)) + (lon_12(:) - lon_Temp(j)).*(lon_12(:) - lon_Temp(j)));
-        distance = zeros(1,9);
+        inverseDistance = zeros(1,9);
         for k = 1:9
             if(~isnan(iceC(index(k))))
-                distance(1,k) = sum((m_ll2xy(lon_Temp(j), lat_Temp(j)) - m_ll2xy(lon_12(index(k)), lat_12(index(k)))) .^ 2);
+                inverseDistance(1,k) = 1 / sum((m_ll2xy(lon_Temp(j), lat_Temp(j)) - m_ll2xy(lon_12(index(k)), lat_12(index(k)))) .^ 2);
             else
-                distance(1,k) = 0;
+                inverseDistance(1,k) = 0;
             end
         end
-        sum_Distance = sum(distance);
+        sum_Distance = sum(inverseDistance);
         ANHA12_range_down(j) = 0;
         ANHA12_range_up(j) = 10;
         for k = 1:9
-            if(distance(1,k) ~= 0)
-                track_ANHA12(j) = track_ANHA12(j) + iceC(index(k)) * distance(1, k) / sum_Distance;
+            if(inverseDistance(1,k) ~= 0)
+                track_ANHA12(j) = track_ANHA12(j) + iceC(index(k)) * inverseDistance(1, k) / sum_Distance;
             end
             % Calculate the up and down range of the model output
             if(iceC(index(k)) > ANHA12_range_down(j))

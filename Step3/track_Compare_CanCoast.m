@@ -104,33 +104,33 @@ for i = 1: length-1
         iceC(tmask_4 == 0) = NaN;
         % Find neighbour grid points
         [result,index]=sort((lat_4(:) - lat(campaign_Index(i))).*(lat_4(:) - lat(campaign_Index(i))) + (lon_4(:) - lon(campaign_Index(i))).*(lon_4(:) - lon(campaign_Index(i))));
-        distance = zeros(1,4);
+        inverseDistance = zeros(1,4);
         kk = 1; % Number of valid neighbour points
         k = 1; % Number of index
         valid_Index = zeros(1, 4);
         while kk <= 4
             if(~isnan(iceC(index(k))))
-                distance(1,kk) = sum((m_ll2xy(lon(campaign_Index(i)), lat(campaign_Index(i))) - m_ll2xy(lon_4(index(k)), lat_4(index(k)))) .^ 2);
+                inverseDistance(1,kk) = 1 / sum((m_ll2xy(lon(campaign_Index(i)), lat(campaign_Index(i))) - m_ll2xy(lon_4(index(k)), lat_4(index(k)))) .^ 2);
                 valid_Index(1, kk) = index(k);
                 kk = kk + 1;
             end
             % Break active situations:
-            % 1. search more than 10 neighbours until there is 1 non-zero
-            % 2. search less than 10 neighbours with at least 1 non-zero
+            % 1. search more than 4 neighbours until there is 1 non-zero
+            % 2. search less than 4 neighbours with at least 1 non-zero
             if(k > 4 && kk > 1)
                 break; 
             elseif(k > 4 && kk == 0)
-                distance(1,kk) = 0;
+                inverseDistance(1,kk) = 0;
                 kk = kk + 1;
                 break;
             end
             k = k + 1;
         end
-        sum_Distance = sum(distance);
+        sum_Distance = sum(inverseDistance);
         ANHA4_range_down(j) = 0;
         ANHA4_range_up(j) = 10;
         for k = 1:kk-1
-            track_ANHA4(less_2008) = track_ANHA4(less_2008) + iceC(valid_Index(k)) * distance(1, k) / sum_Distance;
+            track_ANHA4(less_2008) = track_ANHA4(less_2008) + iceC(valid_Index(k)) * inverseDistance(1, k) / sum_Distance;
             % Calculate the up and down range of the model output
             if(iceC(valid_Index(k)) > ANHA4_range_down(j))
                ANHA4_range_down(j) = iceC(valid_Index(k));
@@ -177,33 +177,33 @@ for i = 1: length-1
         iceC(tmask_12 == 0) = NaN;
         % Find neighbour grid points
         [result,index]=sort((lat_12(:) - lat(campaign_Index(i))).*(lat_12(:) - lat(campaign_Index(i))) + (lon_12(:) - lon(campaign_Index(i))).*(lon_12(:) - lon(campaign_Index(i))));
-        distance = zeros(1,4);
+        inverseDistance = zeros(1,4);
         kk = 1; % Number of valid neighbour points
         k = 1; % Number of index
         valid_Index = zeros(1, 4);
         while kk <= 4
             if(~isnan(iceC(index(k))))
-                distance(1,kk) = sum((m_ll2xy(lon(campaign_Index(i)), lat(campaign_Index(i))) - m_ll2xy(lon_12(index(k)), lat_12(index(k)))) .^ 2);
+                inverseDistance(1,kk) = 1 / sum((m_ll2xy(lon(campaign_Index(i)), lat(campaign_Index(i))) - m_ll2xy(lon_12(index(k)), lat_12(index(k)))) .^ 2);
                 valid_Index(1, kk) = index(k);
                 kk = kk + 1;
             end
             % Break active situations:
-            % 1. search more than 10 neighbours until there is 1 non-zero
-            % 2. search less than 10 neighbours with at least 1 non-zero
+            % 1. search more than 9 neighbours until there is 1 non-zero
+            % 2. search less than 9 neighbours with at least 1 non-zero
             if(k > 9 && kk > 1) 
                 break;
             elseif(k > 9 && kk == 0)
-                distance(1,kk) = 0;
+                inverseDistance(1,kk) = 0;
                 kk = kk + 1;
                 break;
             end
             k = k + 1;
         end
-        sum_Distance = sum(distance);
+        sum_Distance = sum(inverseDistance);
         ANHA12_range_down(j) = 0;
         ANHA12_range_up(j) = 10;
         for k = 1:kk-1
-            track_ANHA12(j) = track_ANHA12(j) + iceC(valid_Index(k)) * distance(1, k) / sum_Distance;
+            track_ANHA12(j) = track_ANHA12(j) + iceC(valid_Index(k)) * inverseDistance(1, k) / sum_Distance;
             % Calculate the up and down range of the model output
             if(iceC(valid_Index(k)) > ANHA12_range_down(j))
                ANHA12_range_down(j) = iceC(valid_Index(k));

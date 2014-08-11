@@ -104,13 +104,13 @@ for i = 1: length-1
         iceC(tmask_4 == 0) = NaN;
         % Find neighbour grid points
         [result,index]=sort((lat_4(:) - lat(campaign_Index(i))).*(lat_4(:) - lat(campaign_Index(i))) + (lon_4(:) - lon(campaign_Index(i))).*(lon_4(:) - lon(campaign_Index(i))));
-        distance = zeros(1,4);
+        inverseDistance = zeros(1,4);
         kk = 1; % Number of valid neighbour points
         k = 1; % Number of index
         valid_Index = zeros(1, 4);
         while kk <= 4
             if(~isnan(iceC(index(k))))
-                distance(1,kk) = sum((m_ll2xy(lon(campaign_Index(i)), lat(campaign_Index(i))) - m_ll2xy(lon_4(index(k)), lat_4(index(k)))) .^ 2);
+                inverseDistance(1,kk) = sum((m_ll2xy(lon(campaign_Index(i)), lat(campaign_Index(i))) - m_ll2xy(lon_4(index(k)), lat_4(index(k)))) .^ 2);
                 valid_Index(1, kk) = index(k);
                 kk = kk + 1;
             end
