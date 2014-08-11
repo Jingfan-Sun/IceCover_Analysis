@@ -1,0 +1,9 @@
+DATA DESCRIPTION:
+   http://icdc.zmaw.de/seaicethickness_satobs_arc.html?&L=1
+   Gridded sea ice thickness data from 10 ICESat campaigns are available here. The estimate at each grid point is the average thickness of all observations within that grid cell over the duration of each campaign.
+   Data products are created from data release 531: the latest and best releases available in terms of the quality of precision orbit and attitude determination at the time of this analysis. These 10 campaigns span a period of 5 years between 2003 and 2008. The thickness fields are shown on the right side of this page. 
+  The data sets use the following campaign designations: ON03, FM04, ON04, FM05, ON05, FM06, ON06, MA07, ON07, and FM08.
+
+UPDATE: As of 11/18/10, new thickness files include line entries with: no ice (-1.0) and land (9999.0). 
+
+

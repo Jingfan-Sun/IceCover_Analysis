@@ -1,0 +1,4 @@
+\beamer@endinputifotherversion {3.32pt}
+\beamer@sectionintoc {1}{Sea-Ice Concentration Analysis}{3}{0}{1}
+\beamer@sectionintoc {2}{Sea-Ice Thickness Analysis}{27}{0}{2}
+\beamer@sectionintoc {3}{Sea-Ice Thickness Distribution}{51}{0}{3}

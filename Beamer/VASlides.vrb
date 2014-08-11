@@ -1,0 +1,19 @@
+\frametitle{SimPy Dequeue Operations}
+
+
+
+When the next event is executed, these operations occur:
+
+\begin{itemize}
+
+\item [(iii)] remove head of list {\bf timestamps}, time t
+
+\item [(iv)] reactivate (invoke Python iterator for) {\bf Run()} function
+for event of time t in dictionary {\bf events}
+
+\end{itemize}
+
+
+
+Again, what would appear to be an O(1) event is actually O(n).
+
