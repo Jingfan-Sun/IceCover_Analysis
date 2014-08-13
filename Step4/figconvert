@@ -1,0 +1,105 @@
+#!/bin/bash
+# show information and cmds for image editing
+# usage:
+#     figconvert [options] imagefile
+#                       -i : show information
+#                       -c : crop
+#                       -t : auto-trim
+#                       -s : resize
+#                       -O : overwrite
+#                       -h : help information
+
+#set +x
+if [ $# -le 1 ]; then
+   sed -n '3,8p' `which figconvert`
+   exit
+else
+   IsInfor=0
+   IsOW=0
+   IsCrop=0
+   IsResize=0
+   IsTrim=0
+   IndImg=0
+   while [ $# -ge 1 ];
+   do
+      IsOpt=`echo $1 | cut -c1`
+      Opt=`echo $1 | cut -c2-`
+      if [ $IsOpt == '-' ]; then
+         case $Opt in
+            h)
+               sed -n '3,8p' `which figconvert`
+               shift
+               ;;
+            i|infor|information)
+               IsInfo=1; shift
+               ;;
+            O|overwrite)
+               IsOW=1; shift
+               ;;
+            s|r|size|resize)
+               IsResize=1
+               myPer=$2
+               shift; shift
+               ;;
+            c|crop)
+               IsCrop=1; shift
+               ;;
+            t|trim|T)
+               IsTrim=1; shift
+               ;;
+            *)
+               echo "Unkown option: -"${Opt}
+               figconvert -h
+               exit
+         esac
+      else
+         eval figname[$IndImg]=$1
+         shift
+         IndImg=`expr $IndImg + 1`
+      fi
+   done
+
+   [ ${IndImg} -eq 0 ] && echo "no image file" && exit
+   if [[ $IsInfo -eq 1  && $IndImg -ge 1 ]]; then
+      for imgfile in ${figname[*]} 
+      do
+          identify $imgfile
+      done
+   fi
+   
+   if [ $IndImg -ge 1 ]; then
+      if [[ $IsResize -eq 1 && $IsCrop -eq 1 ]]; then
+         for imgfile in ${figname[*]} 
+         do
+             echo "convert ${imgfile} -resize 100%x100% -crop 1730x1580+385+40 new_$imgfile;"
+         done
+      else
+         if [ $IsResize -eq 1 ]; then
+            for imgfile in ${figname[*]} 
+            do
+                if [ $IsOW -eq 1 ]; then
+                   eval "convert ${imgfile} -resize ${myPer}% new_$imgfile" && mv new_$imgfile $imgfile
+                else
+                   eval "convert ${imgfile} -resize ${myPer}% new_$imgfile"
+                fi
+            done
+         fi
+         if [ $IsCrop -eq 1 ]; then
+            for imgfile in ${figname[*]} 
+            do
+                echo "convert ${imgfile} -crop 1730x1580+385+40 new_$imgfile;"
+            done
+         fi
+         if [ $IsTrim -eq 1 ]; then
+            for imgfile in ${figname[*]} 
+            do
+                convert -trim ${imgfile} new_${imgfile} && mv new_${imgfile} ${imgfile}
+            done
+         fi
+      fi
+      [[ $IsResize -eq 0 && $IsCrop -eq 0 && IsInfo -eq 0 && IsTrim -eq 0 ]] && figconvert -h
+   else   
+      [ $IsResize -eq 1 ] && echo "convert -resize WxH[20%x30%] oldimg newimg"
+      [ $IsCrop -eq 1 ] && echo "convert -crop WxH+x+y oldimg newimg"
+   fi
+fi
