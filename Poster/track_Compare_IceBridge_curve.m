@@ -222,7 +222,8 @@ for i = 2
 % %     end
     toc;
     % set(gcf,'paperPositionMode','auto'); % print the figure with the same size in matlab
-     print(gcf, '-dpng' ,'-r300',['IceBridge_summaries_2009_2011_v1_', campaign_Name{i}, '_curve.png']);
+    set(gcf, 'paperPosition', [0.25 2.5 7 3]);
+    print(gcf, '-dpng' ,'-r300',['IceBridge_summaries_2009_2011_v1_', campaign_Name{i}, '_curve.png']);
 end
 % 
 % % for i = 1:length-1
