@@ -33,7 +33,7 @@ data_Type = 'iicethic';
 myIceH_sum = 0;
 % date = num2date(yearCounter, timeCounter);
 
-for control_Index = 6:10
+for control_Index = 1: 4
     
     if nargin==0
         flname=['icesat_icethk_', name_Array{control_Index}, '_filled.dat'];
@@ -189,6 +189,7 @@ end
         % colorbar('location','southoutside')
         set(gcf,'paperPositionmode','auto')
         set(gca, 'CLim', [0, 4.0]);
+        set(hbar,'position',[0.9 0.1055 0.02 0.8203]);
         % figurenicer;
         disp('figure 1 complete');
         toc;
@@ -201,7 +202,7 @@ end
     end
     
     set(gcf, 'visible', 'on');
-    xlabel('Ice Thickness Satellite Oct and Nov 2003-2007','fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
+    xlabel('Ice Thickness Satellite Feb and Mar 04, 05, 06, 08','fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
 
-    print(gcf, '-dpng', '-r300' ,'Ice_Thickness_Autumn_Satellite.png');
+    print(gcf, '-dpng', '-r300' ,'Ice_Thickness_Spring_Satellite.png');
 

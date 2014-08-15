@@ -33,7 +33,7 @@ data_Type = 'iicethic';
 myIceH_sum = 0;
 % date = num2date(yearCounter, timeCounter);
 
-for control_Index = 1:4
+for control_Index = 6:10
     
     if nargin==0
         flname=['icesat_icethk_', name_Array{control_Index}, '_filled.dat'];
@@ -169,7 +169,6 @@ end
         % using m_map toolbox
         % m_proj('stereographic','lat',90,'long',0,'radius',30);
         % m_proj('stereographic','latitude',90,'radius',35,'rotangle',45);
-        title('Ice Thickness Spring Satellite','fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
         m_proj('stereographic','lat',90,'long',-60,'radius',35,'rect','off');
         tic;
         hp=m_pcolor(sat_Lon,sat_Lat,myIceH_sum / 4);set(hp,'linestyle','none');
@@ -186,10 +185,11 @@ end
         colormap(mycolormap.icecmap)
         hbar=colorbar;
         if exist('myCAXIS','var'), caxis(myCAXIS), end
-        
+        set(hbar,'tag','cbar','fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
         % colorbar('location','southoutside')
         set(gcf,'paperPositionmode','auto')
-        set(gca, 'CLim', [0, 5.0]);
+        set(gca, 'CLim', [0, 4.0]);
+        set(hbar,'position',[0.9 0.1055 0.02 0.8203]);
         % figurenicer;
         disp('figure 1 complete');
         toc;
@@ -202,6 +202,7 @@ end
     end
     
     set(gcf, 'visible', 'on');
-    
+    xlabel('Ice Thickness Satellite Feb and Mar 04, 05, 06, 08','fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
+
     print(gcf, '-dpng', '-r300' ,'Ice_Thickness_Spring_Satellite.png');
 
