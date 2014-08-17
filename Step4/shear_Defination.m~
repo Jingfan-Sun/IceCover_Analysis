@@ -1,0 +1,5 @@
+%% Claculate the shear defination of the ice
+% Method:
+% u: iicevelu;  v: iicevelv;
+% du/dx = (u(i + 1, j) - u(i, j)) / (2 * e1t(i, j))
+% dv/dy = (v(i, j ) - v(i, j)) / (2 * e2t(i, j))
