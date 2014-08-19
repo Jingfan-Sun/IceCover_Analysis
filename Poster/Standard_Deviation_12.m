@@ -1,0 +1,130 @@
+%% Change from March to September
+% timeCounter, day_Num, Loop-in Reintialize, Output
+clear;clc;
+
+%% Initialization
+timeCounter = 275; % March 60 September 245 Feb 35 Oct 275
+data_Type = 'iicethic';
+day_Num = 12; % Sept 6, March 7
+configuration = '12th';
+
+% mesh file that includes the length of each grid
+meshhgr='/mnt/storage0/xhu/CREG012-I/mask/CREG12_mesh_hgr.nc'; % horizontal mesh file
+maskfile='/mnt/storage0/xhu/CREG012-I/mask/CREG12_mask_v34.nc'; % mask file
+
+%% Read files and calculate the mean over 2003-2010
+for yearCounter = 2003: 2007
+    
+    ice_Sum = 0;
+    ice_Mean = 0;
+    
+    for i = 1:day_Num
+        date = num2date(yearCounter, timeCounter);
+        
+        srcP='/mnt/storage0/xhu/CREG012-EXH003/'; % 12th
+        ncfile=[srcP,'CREG012-EXH003_y',date,'_icemod.nc']; % 12th
+        NY=2400; NX=1632; % dimension of the whole model domain
+        subII=1:1632; subJJ=1:2400;
+        iceC=GetNcVar(ncfile,data_Type,[subII(1)-1 subJJ(1)-1 0],[numel(subII) numel(subJJ) 1]);
+
+        ice_Sum = ice_Sum + iceC;
+        
+        timeCounter = timeCounter + 5;
+    end
+    
+    ice_Mean = ice_Sum / day_Num;
+    
+    eval(['ice', num2str(yearCounter-2002), '=ice_Mean;']);
+    
+    timeCounter = 275; % don't forget to change
+    disp(['file read finished: ', num2str(yearCounter)]);
+end
+
+%% Calculate the STD
+temp = zeros(1, 6);
+std_Result = zeros(NY,NX);
+temp_Mean = zeros(NY,NX);
+temp_Sum = zeros(NY,NX);
+% for i = 1:NY
+%     for j = 1:NX
+%         for k = 1:8
+%             eval(['temp(', num2str(k), ')=ice', num2str(k), '(', num2str(i), ',', num2str(j), ');']);
+%         end
+%         std_Result(i,j) = std(temp);
+%     end
+%     disp([num2str(i/2400*100), '%']);
+% end
+
+for i = 1: 5
+   eval(['temp_Mean = temp_Mean + ice', num2str(i), ';']);
+end
+temp_Mean = temp_Mean / 5;
+disp('mean finished');
+
+for i = 1: 5
+    eval(['temp_Sum = temp_Sum + (ice', num2str(i), '-temp_Mean).^2;']);
+end
+disp('square finished');
+std_Result = sqrt(temp_Sum / 4); % STD here use normalization N-1
+
+
+%% Do plotting
+navLon=GetNcVar(maskfile,'nav_lon',[subII(1)-1 subJJ(1)-1],[numel(subII) numel(subJJ)]);
+navLat=GetNcVar(maskfile,'nav_lat',[subII(1)-1 subJJ(1)-1],[numel(subII) numel(subJJ)]);
+
+% declare the map projection, pan-Arctic region
+m_proj('stereographic','lat',90,'long',-60,'radius',35,'rect','off');
+myxtick=[-150:60:180];
+myytick=[45:5:85];
+
+% plot ice concentration
+hp=m_pcolor(navLon,navLat,std_Result);set(hp,'linestyle','none');
+
+if ~ishold, hold off; end
+
+% fill the land
+%m_gshhs_i('patch',[1 .85 .7]); set(findobj('tag','m_gshhs_i'),'linestyle','none');
+m_coast('patch',[0 0 0]); set(findobj('tag','m_coast'),'linestyle','none'); % low resolution coastlines
+m_nolakes;
+
+% plot map grid
+m_grid('tickdir','in','bac','none','xtick',myxtick,'ytick',myytick,'linestyle','-','linewidth',1,'tickdir','out','fontsize',18)
+set(findobj('tag','m_grid_ygrid'),'color',[0.5 0.5 0.5],'linestyle','-')
+set(findobj('tag','m_grid_xgrid'),'color',[0.5 0.5 0.5],'linestyle','-')
+
+% refine the map grid
+delete(findobj('tag','m_grid_xticks-lower'));
+delete(findobj('tag','m_grid_xticks-upper'));
+delete(findobj('tag','m_grid_yticks-left'));
+delete(findobj('tag','m_grid_yticks-right'));
+hxlabel=findobj(gca,'tag','m_grid_xticklabel');  set(hxlabel,'fontweight','b','fontsize',8,'fontname','Nimbus Sans L');
+hylabel=findobj(gca,'tag','m_grid_yticklabels'); set(hylabel,'fontweight','b','fontsize',8,'fontname','Nimbus Sans L','rotation',0');
+delete(hylabel([2 4]));
+[xxtmp,yytmp]=m_ll2xy((85:-5:45)*0-15,85:-5:45);
+
+movePostion(hylabel(1),0.055,'y');
+movePostion(hylabel(6),-0.035,'y');
+movePostion(hylabel(6),-0.03,'x');
+%    for np=1:2:9
+%        movePosition(hylabel(np),xxtmp(np),yytmp(np));
+%    end
+%    movePostion(hylabel(1),[-0.01 0.06],'xy'); %85
+%    movePostion(hylabel(3),0.025,'y'); %75
+%    movePostion(hylabel(5),0.03,'y'); %65
+%    movePostion(hylabel(7),[0.01 0.03],'xy'); %55
+%    movePostion(hylabel(9),[0.2 0.03],'xy'); %45
+
+load mycolormap
+colormap(mycolormap.icecmap)
+hbar=colorbar;
+if exist('myCAXIS','var'), caxis(myCAXIS), end
+set(hbar,'tag','cbar','fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
+% colorbar('location','southoutside')
+set(gcf,'paperPositionmode','auto')
+set(gca, 'CLim', [0, 1.21]); % ice thickness 0-1.21 \\\ ice concentrstion 0-0.45
+set(hbar,'position',[0.9 0.1055 0.02 0.8203]);
+
+%% Output
+set(gcf, 'visible', 'on');
+xlabel(['Ice Thickness STD 2003-2007 Oct and Nov ',configuration, ' Degree'],'fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
+print(gcf, '-dpng', '-r300' ,['Ice_Thickness_STD_Oct_Nov_',configuration,'_Degree','.png']);

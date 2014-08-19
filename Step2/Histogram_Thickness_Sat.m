@@ -7,7 +7,7 @@ bins = 0:0.2:8; % in 0.2 thick bins
 total_Area_Sum = zeros(1, numel(bins) - 1); % Total ice among certain periad
 isProj = 1;
 
-for i = 1:4
+for i = 6:10
 
     flname=['icesat_icethk_', name_Array{i}, '_filled.dat'];
 
@@ -57,7 +57,7 @@ for i = 1:4
     total_Area_Sum = total_Area_Sum + total_Area;
 end
 
-total_Area_Mean = total_Area_Sum / 4 ;
+total_Area_Mean = total_Area_Sum / 5 ;
 
 %% Do plotting
 % b = bar(0:0.2:7.8,total_Area);
@@ -76,7 +76,7 @@ grid on;
 
 %% Output
 set(gcf, 'visible', 'on');
-title(['Ice Thickness Sat Distribution over February and March over 04, 05, 06, 08'],'fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
+title(['Ice Thickness Sat Distribution over October and November over 2003-2007'],'fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
 xlabel('Ice Thickness \m');
 xlabh = get(gca,'XLabel');
 set(xlabh,'Position',get(xlabh,'Position') + [0 30000 0]);
@@ -84,6 +84,6 @@ ylabel('Area \km^2');
 set(gca, 'Position', [0.13 0.085 0.775 0.815]);
 title=get(gca, 'Title');
 set(title, 'Position', get(title, 'Position') + [0 40000 0]);
-print(gcf, '-dpng', '-r300' ,['Ice_Thickness_Sat_Distribution_FM_04_05_06_08.png']);
+print(gcf, '-dpng', '-r300' ,['Ice_Thickness_Sat_Distribution_ON_2003_2007.png']);
 
 
