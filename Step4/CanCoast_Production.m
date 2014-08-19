@@ -2,7 +2,7 @@
 clc;clear;
 close all;
 %% Read data
-D = importdata('unified-sea-ice-thickness-cdr-1947-2012/CanCoast_summaries_1947_2010_v1.txt');
+D = importdata('/home/jingfan/Step3/unified-sea-ice-thickness-cdr-1947-2012/CanCoast_summaries_1947_2010_v1.txt');
 tmask_12 = GetNcVar('/mnt/storage0/xhu/CREG012-I/mask/CREG12_mask_v34.nc','tmask',[0 0 0 0],[1632 2400 1 1]);  % surface land mask
 tmask_4 = GetNcVar('/mnt/storage0/xhu/CREG025-I/mesh_mask_creg025.nc','tmask',[0 0 0],[544 800 1]);  % surface land mask
 [row, col] = size(D.data);
@@ -34,9 +34,17 @@ lon = D.data(:, 8);
 Yday = D.data(:, 3);
 Avg_ic = D.data(:, 23);
 
-%% Plot track
+%% Initialization
 [~, length] = size(campaign_Index);
-for 3
+% record the neighbour index of each point on the track
+neighbour_Index_12 = zeros(8, 9);
+inverseDistance_all = zeros(8, 9);
+ii = 1;
+load IceH_all;
+load IceP_all;
+valid_plotIndex = 1; % used for plotting production plots
+%% Calculate track data for later plot
+for i = 1: length - 1
     data_Position = zeros(1, numel(campaign_Year{1, i}));
     jj = 1;
     for k = 1: numel(campaign_Year{1, i})
@@ -79,9 +87,6 @@ for 3
     % Record the data of each point
     date_All = cell(1, (campaign_Index(i + 1) - campaign_Index(i)));
     less_2008 = 0;
-    % draw range line
-    ANHA4_range_down = zeros(size(x));
-    ANHA4_range_up = zeros(size(x));
     for j = 1: numel(x)
         if(campaign_Year{1, i}(data_Position(j)) > 2008)
             continue;
@@ -127,28 +132,15 @@ for 3
             k = k + 1;
         end
         sum_Distance = sum(inverseDistance);
-        ANHA4_range_down(j) = 0;
-        ANHA4_range_up(j) = 10;
         for k = 1:kk-1
             track_ANHA4(less_2008) = track_ANHA4(less_2008) + iceC(valid_Index(k)) * inverseDistance(1, k) / sum_Distance;
-            % Calculate the up and down range of the model output
-            if(iceC(valid_Index(k)) > ANHA4_range_down(j))
-               ANHA4_range_down(j) = iceC(valid_Index(k));
-            end
-            if(iceC(valid_Index(k)) < ANHA4_range_up(j))
-               ANHA4_range_up(j) = iceC(valid_Index(k));
-            end
         end
     end
     track_ANHA4 = track_ANHA4(1, 1: less_2008);
-    ANHA4_range_down = ANHA4_range_down(1, 1: less_2008);
-    ANHA4_range_up = ANHA4_range_up(1, 1: less_2008);
     date_X_less_2008 = date_X(1, 1: less_2008);
     hold on;
     xx = 1: less_2008;
     p2 = plot(date_X_less_2008, track_ANHA4, '-b', 'LineWidth', 2);
-    plot(date_X_less_2008, ANHA4_range_down, '--b', 'LineWidth', 0.5);
-    plot(date_X_less_2008, ANHA4_range_up, '--b', 'LineWidth', 0.5);
     disp(['ANHA4 finished ', num2str(i)]);
     %% ANHA12
     % Read Lon and Lat
@@ -157,9 +149,6 @@ for 3
     lon_12=GetNcVar(ncfile,'nav_lon',[0 0],[1632 2400]);
     lat_12=GetNcVar(ncfile,'nav_lat',[0 0],[1632 2400]);
     track_ANHA12 = zeros(size(x)); % data from ANHA4
-    % draw range line
-    ANHA12_range_down = zeros(size(x));
-    ANHA12_range_up = zeros(size(x));
     for j = 1: numel(x)
         % Calculate the data
         yearCounter = campaign_Year{1, i}(data_Position(j));
@@ -200,29 +189,19 @@ for 3
             k = k + 1;
         end
         sum_Distance = sum(inverseDistance);
-        ANHA12_range_down(j) = 0;
-        ANHA12_range_up(j) = 10;
         for k = 1:kk-1
             track_ANHA12(j) = track_ANHA12(j) + iceC(valid_Index(k)) * inverseDistance(1, k) / sum_Distance;
-            % Calculate the up and down range of the model output
-            if(iceC(valid_Index(k)) > ANHA12_range_down(j))
-               ANHA12_range_down(j) = iceC(valid_Index(k));
-            end
-            if(iceC(valid_Index(k)) < ANHA12_range_up(j))
-               ANHA12_range_up(j) = iceC(valid_Index(k));
-            end
         end
     end
     hold on;
     p3 = plot(date_X, track_ANHA12, '-r', 'LineWidth', 2);
-    plot(date_X, ANHA12_range_down, '--r', 'LineWidth', 0.5);
-    plot(date_X, ANHA12_range_up, '--r', 'LineWidth', 0.5);
     grid on;
-    set(gca,'fontweight','bold','fontsize',7,'fontname','Nimbus Sans L');
+    set(gca,'fontweight','bold','fontsize',5,'fontname','Nimbus Sans L');
+    
     %% Calculate and change the x and y labels and ticks
     clear title xlabel ylabel;
-    xlabel('Date');
-    ylabel('Thickness /m');
+    xlabel('Date', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
+    ylabel('Thickness /m', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
     % title
     title = title(['FILE: CanCoast_summaries_1947_2010_v1 TRACK: ', campaign_Name{i}], 'fontweight','bold','fontsize', 12,'fontname','Nimbus Sans L');
     set(title,'Interpreter','none');
@@ -244,61 +223,25 @@ for 3
     y1 = zeros(1, xLimit(2) + xLimit_up);
     YLim_plot = get(gca, 'YLim');
     disp(['ANHA12 finished ', num2str(i)]);
-    %% Map plot
+    %% Production plot
     subplot(212);
-    m_proj('stereographic','latitude',70,'lon',-90, 'radius',20);
-    m_grid;
-    disp(['grid finish ', num2str(i)]);
-    m_gshhs_i('patch',[0 0 0],'linestyle','none');% plot map grid
-    m_nolakes;
-    disp(['gshhs finish ', num2str(i)]);
-    m_line(lon(campaign_Index(i)), lat(campaign_Index(i)), 'Color', 'g', 'LineStyle', '*', 'LineWidth', 3);
-    
-    set(gca,'fontweight','b','fontsize',8,'fontname','Nimbus Sans L');
-    %% Change the font and size of the label in maps
-    hxlabel=findobj(gca,'tag','m_grid_xticklabel');  set(hxlabel,'fontweight','b','fontsize',8,'fontname','Nimbus Sans L');
-    hylabel=findobj(gca,'tag','m_grid_yticklabels'); 
-    % Delete lontitude line according to the number of the lontitude
-    % available
-    delete(hxlabel);
-    set(hylabel,'fontweight','b','fontsize',8,'fontname','Nimbus Sans L','rotation',0');
-    delete(hylabel([1 numel(hylabel)]));
-    %    text_Num = round((campaign_Index(i + 1) - campaign_Index(i)) / 2);
-    %    [x, y] = m_ll2xy(lon_Temp(text_Num), lat_Temp(text_Num));
-    %    text(x, y, num2str(i), 'Color', 'r', 'FontSize', 6, 'fontweight','bold', 'fontname','Nimbus Sans L');
-    %     hleg1 = text(0.7,(0.6 - room*i), [num2str(i), ' ', campaign_Name{i}, ' ', num2str(campaign_Year(i))], 'Color', color_Temp, 'FontSize', 8, 'fontweight','bold', 'fontname','Nimbus Sans L');
-    %     set(hleg1,'Interpreter','none');
-    %    legend = m_legend('a');
-    %    set(legend, 'AmbientLightColor', 'b');
+    p4 = plot(1: 584, IceH_all(valid_plotIndex, :), '-g', 'LineWidth', 2);
     hold on;
-    hax = axes();
-    set(hax, 'Color', 'none');
-    axis off;
-    set(gca,'Xlim',[0 1]);
-    set(gca,'Ylim',[0 1]);
-    set(gcf, 'currentAxes', hax);
-    %% Annotation at the side of the map
-    room = 0.8 / numel(x);
-    for j = 1: numel(x)
-        if(j < numel(x)/2)
-            text(0.05,(0.4 - room*(j)), [num2str(j), ': ', date_All{1, j}]...
-                , 'Color', 'k', 'FontSize', 5, 'fontweight','bold', 'fontname','Nimbus Sans L');
-        else
-            text(0.85,(0.4 - room*(round(j - numel(x) / 2))), [num2str(j), ': ', date_All{1, j}]...
-                , 'Color', 'k', 'FontSize', 5, 'fontweight','bold', 'fontname','Nimbus Sans L');
-        end
+    p5 = plot(1: 584, IceP_all(valid_plotIndex, :), '-m', 'LineWidth', 2);
+    grid on;
+    xtick_Char_P = cell(1, 7);
+    xtick_Char_P{1} = num2date(2003, 5);
+    for j = 2:7
+        xtick_Char_P{j} = num2date(((j-1)*500-rem((j-1)*500, 365))/365+2003, rem((j-1)*500, 365));
     end
+    set(gca,'xTicklabel', xtick_Char_P);
+    legend([p4 p5], 'Thickness','Production','Location', 'NorthWest');
+    xlabel('Date', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
+    ylabel('Thickness /m', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
+    set(gca,'fontweight','bold','fontsize',7,'fontname','Nimbus Sans L');
     toc;
+    valid_plotIndex = valid_plotIndex + 1;
     % set(gcf,'paperPositionMode','auto'); % print the figure with the same size in matlab
-    print(gcf, '-dpng' ,'-r300',['CanCoast_summaries_1947_2010_v1_', campaign_Name{i}, '.png']);
+    set(gcf, 'paperPosition', [0.25 2.5 5.6 7]);
+    print(gcf, '-dpng' ,'-r300',['CanCoast_summaries_1947_2010_v1_', campaign_Name{i}, '_withProduction.png']);
 end
-
-% for i = 1:length-1
-%     lon_Temp = lon(campaign_Index(i): (campaign_Index(i + 1) - 1));
-%     lat_Temp = lat(campaign_Index(i): (campaign_Index(i + 1) - 1));
-%     text_Num = round((campaign_Index(i + 1) - campaign_Index(i)) / 2);
-%     [x, y] = m_ll2xy(lon_Temp(text_Num), lat_Temp(text_Num));
-%     text(x, y, num2str(i), 'Color', 'r', 'FontSize', 6, 'fontweight','bold', 'fontname','Nimbus Sans L');
-% end
-
-

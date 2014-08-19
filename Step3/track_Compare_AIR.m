@@ -34,7 +34,7 @@ Avg_ic_with_sn = D.data(:, 23);
 
 %% Plot track
 [~, length] = size(campaign_Index);
-for i = 1: length-1
+for i = 5
     tic;
     if(campaign_Year(i) < 2003 || campaign_Year(i) > 2008)
         continue;

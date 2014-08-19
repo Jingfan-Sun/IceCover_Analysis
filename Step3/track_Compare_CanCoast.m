@@ -36,7 +36,7 @@ Avg_ic = D.data(:, 23);
 
 %% Plot track
 [~, length] = size(campaign_Index);
-for i = 1: length-1
+for i = 1: length - 1
     data_Position = zeros(1, numel(campaign_Year{1, i}));
     jj = 1;
     for k = 1: numel(campaign_Year{1, i})
