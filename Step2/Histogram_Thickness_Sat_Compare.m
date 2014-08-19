@@ -10,7 +10,7 @@ isProj = 1;
 
 %% Salellite
 subplot(311);
-for i = 1:4
+for i = 6:10
 
     flname=['icesat_icethk_', name_Array{i}, '_filled.dat'];
 
@@ -60,7 +60,7 @@ for i = 1:4
     total_Area_Sum = total_Area_Sum + total_Area;
 end
 
-total_Area_Mean = total_Area_Sum / 4 ;
+total_Area_Mean = total_Area_Sum / 5 ;
 
 %% Do plotting
 % b = bar(0:0.2:7.8,total_Area);
@@ -94,7 +94,7 @@ ylabel('Area \km^2', 'fontweight','bold','fontsize',8,'fontname','Nimbus Sans L'
 %% 1/4 model
 total_Area_Sum = zeros(1, numel(bins) - 1); % Total ice among certain periad
 subplot(312);
-for i = 1:4
+for i = 6:10
 
     eval(['load ', 'icesat_icethk_', num2str(i), '_4th_data.mat']);
     model_Compare_4 = model_Compare;
@@ -114,7 +114,7 @@ for i = 1:4
     total_Area_Sum = total_Area_Sum + total_Area;
 end
 
-total_Area_Mean = total_Area_Sum / 4 ;
+total_Area_Mean = total_Area_Sum / 5 ;
 
 %% Do plotting
 % b = bar(0:0.2:7.8,total_Area);
@@ -148,7 +148,7 @@ ylabel('Area \km^2', 'fontweight','bold','fontsize',8,'fontname','Nimbus Sans L'
 %% 1/12 model
 total_Area_Sum = zeros(1, numel(bins) - 1); % Total ice among certain periad
 subplot(313);
-for i = 1:4
+for i = 6:10
 
     eval(['load ', 'icesat_icethk_', num2str(i), '_12th_data.mat']);
     model_Compare_12 = model_Compare;
@@ -168,7 +168,7 @@ for i = 1:4
     total_Area_Sum = total_Area_Sum + total_Area;
 end
 
-total_Area_Mean = total_Area_Sum / 4 ;
+total_Area_Mean = total_Area_Sum / 5 ;
 
 %% Do plotting
 % b = bar(0:0.2:7.8,total_Area);
@@ -199,7 +199,7 @@ ylabel('Area \km^2', 'fontweight','bold','fontsize',8,'fontname','Nimbus Sans L'
 % set(gca, 'Position', [0.13 0.085 0.775 0.815]);
 % title=get(gca, 'Title');
 % set(title, 'Position', get(title, 'Position') + [0 40000 0]);
-set(gcf, 'paperPosition', [0.25 2.5 4 8]);
-print(gcf, '-dpng', '-r300' ,['Ice_Thickness_Sat_Distribution_Compare_FM_2003_2007.png']);
+set(gcf, 'paperPosition', [0.25 2.5 4 10]);
+print(gcf, '-dpng', '-r500' ,['Ice_Thickness_Sat_Distribution_Compare_ON_03_04_05_06_07.png']);
 
 
