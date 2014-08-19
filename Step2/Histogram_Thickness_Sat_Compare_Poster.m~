@@ -1,6 +1,5 @@
 clc;
 clear;
-close all;
 
 % variables
 name_Array = {'fm04', 'fm05', 'fm06', 'fm08', 'ma07', 'on03', 'on04', 'on05', 'on06', 'on07'};
@@ -9,8 +8,8 @@ total_Area_Sum = zeros(1, numel(bins) - 1); % Total ice among certain periad
 isProj = 1;
 
 %% Salellite
-subplot(311);
-for i = 1:4
+figure(1);
+for i = 6:10
 
     flname=['icesat_icethk_', name_Array{i}, '_filled.dat'];
 
@@ -60,7 +59,7 @@ for i = 1:4
     total_Area_Sum = total_Area_Sum + total_Area;
 end
 
-total_Area_Mean = total_Area_Sum / 4 ;
+total_Area_Mean = total_Area_Sum / 5 ;
 
 %% Do plotting
 % b = bar(0:0.2:7.8,total_Area);
@@ -76,25 +75,25 @@ hist(plotting, 0.1:0.2:7.9);
 set(get(gca,'child'),'FaceColor','black','EdgeColor','w');
 set(gca, 'fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
 grid on;
-set(gca, 'YLim', [0, 10e5]);
+set(gca, 'YLim', [0, 13e5]);
 
 %% Output
-title('ICESat','fontweight','bold','fontsize',8,'fontname','Nimbus Sans L');
+title('Sat Distribution October and November over 2003-2007','fontweight','bold','fontsize',8,'fontname','Nimbus Sans L');
 ylabel('Area \km^2', 'fontweight','bold','fontsize',8,'fontname','Nimbus Sans L');
-% set(gcf, 'visible', 'on');
-% title('Satellite','fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
-% xlabel('Ice Thickness \m');
-% xlabh = get(gca,'XLabel');
-% set(xlabh,'Position',get(xlabh,'Position') + [0 30000 0]);
-% ylabel('Area \km^2');
-% set(gca, 'Position', [0.13 0.085 0.775 0.815]);
-% title=get(gca, 'Title');
-% set(title, 'Position', get(title, 'Position') + [0 40000 0]);
+set(gcf, 'visible', 'on');
+xlabel('Ice Thickness \m');
+xlabh = get(gca,'XLabel');
+set(xlabh,'Position',get(xlabh,'Position') + [0 30000 0]);
+ylabel('Area \km^2');
+set(gca, 'Position', [0.13 0.085 0.775 0.815]);
+title=get(gca, 'Title');
+set(title, 'Position', get(title, 'Position') + [0 40000 0]);
+print(gcf, '-dpng', '-r300' ,['Ice_Thickness_Sat_Distribution_ON_2003_2007.png']);
 
 %% 1/4 model
 total_Area_Sum = zeros(1, numel(bins) - 1); % Total ice among certain periad
-subplot(312);
-for i = 1:4
+figure(2);
+for i = 6:10
 
     eval(['load ', 'icesat_icethk_', num2str(i), '_4th_data.mat']);
     model_Compare_4 = model_Compare;
@@ -114,7 +113,7 @@ for i = 1:4
     total_Area_Sum = total_Area_Sum + total_Area;
 end
 
-total_Area_Mean = total_Area_Sum / 4 ;
+total_Area_Mean = total_Area_Sum / 5 ;
 
 %% Do plotting
 % b = bar(0:0.2:7.8,total_Area);
@@ -130,25 +129,26 @@ hist(plotting, 0.1:0.2:7.9);
 set(get(gca,'child'),'FaceColor','black','EdgeColor','w');
 set(gca, 'fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
 grid on;
-set(gca, 'YLim', [0, 10e5]);
+set(gca, 'YLim', [0, 13e5]);
 
 %% Output
 title('ANHA4','fontweight','bold','fontsize',8,'fontname','Nimbus Sans L');
 ylabel('Area \km^2', 'fontweight','bold','fontsize',8,'fontname','Nimbus Sans L');
-% set(gcf, 'visible', 'on');
-% title('ANHA4','fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
-% xlabel('Ice Thickness \m');
-% xlabh = get(gca,'XLabel');
-% set(xlabh,'Position',get(xlabh,'Position') + [0 30000 0]);
-% ylabel('Area \km^2');
-% set(gca, 'Position', [0.13 0.085 0.775 0.815]);
-% title=get(gca, 'Title');
-% set(title, 'Position', get(title, 'Position') + [0 40000 0]);
+set(gcf, 'visible', 'on');
+title('ANHA4','fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
+xlabel('Ice Thickness \m');
+xlabh = get(gca,'XLabel');
+set(xlabh,'Position',get(xlabh,'Position') + [0 30000 0]);
+ylabel('Area \km^2');
+set(gca, 'Position', [0.13 0.085 0.775 0.815]);
+title=get(gca, 'Title');
+set(title, 'Position', get(title, 'Position') + [0 40000 0]);
+print(gcf, '-dpng', '-r300' ,['Ice_Thickness_Sat_Distribution_Compare_ON_03_04_05_06_07.png']);
 
 %% 1/12 model
 total_Area_Sum = zeros(1, numel(bins) - 1); % Total ice among certain periad
-subplot(313);
-for i = 1:4
+figure(3);
+for i = 6:10
 
     eval(['load ', 'icesat_icethk_', num2str(i), '_12th_data.mat']);
     model_Compare_12 = model_Compare;
@@ -168,7 +168,7 @@ for i = 1:4
     total_Area_Sum = total_Area_Sum + total_Area;
 end
 
-total_Area_Mean = total_Area_Sum / 4 ;
+total_Area_Mean = total_Area_Sum / 5 ;
 
 %% Do plotting
 % b = bar(0:0.2:7.8,total_Area);
@@ -184,7 +184,7 @@ hist(plotting, 0.1:0.2:7.9);
 set(get(gca,'child'),'FaceColor','black','EdgeColor','w');
 set(gca, 'fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
 grid on;
-set(gca, 'YLim', [0, 10e5]);
+set(gca, 'YLim', [0, 13e5]);
 
 %% Output
 title('ANHA12','fontweight','bold','fontsize',8,'fontname','Nimbus Sans L');
@@ -199,7 +199,7 @@ ylabel('Area \km^2', 'fontweight','bold','fontsize',8,'fontname','Nimbus Sans L'
 % set(gca, 'Position', [0.13 0.085 0.775 0.815]);
 % title=get(gca, 'Title');
 % set(title, 'Position', get(title, 'Position') + [0 40000 0]);
-set(gcf, 'paperPosition', [0.25 2.5 4 8]);
-print(gcf, '-dpng', '-r300' ,['Ice_Thickness_Sat_Distribution_Compare_FM_2003_2007.png']);
+
+print(gcf, '-dpng', '-r300' ,['Ice_Thickness_Sat_Distribution_Compare_ON_03_04_05_06_07.png']);
 
 
