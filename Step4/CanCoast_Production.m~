@@ -42,9 +42,10 @@ inverseDistance_all = zeros(8, 9);
 ii = 1;
 load IceH_all;
 load IceP_all;
+load IceP_all_Year;
 valid_plotIndex = 1; % used for plotting production plots
 %% Calculate track data for later plot
-for i = 1: length
+for i = 3
     data_Position = zeros(1, numel(campaign_Year{1, i}));
     jj = 1;
     for k = 1: numel(campaign_Year{1, i})
@@ -63,7 +64,7 @@ for i = 1: length
     figure;
     set(gcf, 'Position', [560 524 560 700]);
     %% Line plot
-    subplot(211);
+    subplot(311);
     x = 1: numel(data_Position);
     % Date used for the X-Axis
     date_X = zeros(1, numel(x));
@@ -196,11 +197,12 @@ for i = 1: length
     hold on;
     p3 = plot(date_X, track_ANHA12, '-r', 'LineWidth', 2);
     grid on;
+    set(gca,'fontweight','bold','fontsize',5,'fontname','Nimbus Sans L');
     
     %% Calculate and change the x and y labels and ticks
     clear title xlabel ylabel;
-    xlabel('Date');
-    ylabel('Thickness /m');
+    xlabel('Date', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
+    ylabel('Thickness /m', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
     % title
     title = title(['FILE: CanCoast_summaries_1947_2010_v1 TRACK: ', campaign_Name{i}], 'fontweight','bold','fontsize', 12,'fontname','Nimbus Sans L');
     set(title,'Interpreter','none');
@@ -222,8 +224,8 @@ for i = 1: length
     y1 = zeros(1, xLimit(2) + xLimit_up);
     YLim_plot = get(gca, 'YLim');
     disp(['ANHA12 finished ', num2str(i)]);
-    %% Production plot
-    subplot(212);
+    %% Production plot 1
+    subplot(312);
     p4 = plot(1: 584, IceH_all(valid_plotIndex, :), '-g', 'LineWidth', 2);
     hold on;
     p5 = plot(1: 584, IceP_all(valid_plotIndex, :), '-m', 'LineWidth', 2);
@@ -235,9 +237,27 @@ for i = 1: length
     end
     set(gca,'xTicklabel', xtick_Char_P);
     legend([p4 p5], 'Thickness','Production','Location', 'NorthWest');
-    xlabel('Date');
-    ylabel('Thickness /m');
+    xlabel('Date', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
+    ylabel('Thickness /m', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
     set(gca,'fontweight','bold','fontsize',7,'fontname','Nimbus Sans L');
+    
+    %% Production plot 2
+    subplot(313);
+    p6 = plot(1: 584, IceH_all(valid_plotIndex, :), '-g', 'LineWidth', 2);
+    hold on;
+    p7 = plot(1: 584, IceP_all_Year(valid_plotIndex, :), '-m', 'LineWidth', 2);
+    grid on;
+    xtick_Char_P = cell(1, 7);
+    xtick_Char_P{1} = num2date(2003, 5);
+    for j = 2:7
+        xtick_Char_P{j} = num2date(((j-1)*500-rem((j-1)*500, 365))/365+2003, rem((j-1)*500, 365));
+    end
+    set(gca,'xTicklabel', xtick_Char_P);
+    legend([p6 p7], 'Thickness','Production','Location', 'NorthWest');
+    xlabel('Date', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
+    ylabel('Thickness /m', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
+    set(gca,'fontweight','bold','fontsize',7,'fontname','Nimbus Sans L');
+    
     toc;
     valid_plotIndex = valid_plotIndex + 1;
     % set(gcf,'paperPositionMode','auto'); % print the figure with the same size in matlab

@@ -121,8 +121,25 @@ for yearCounter = 2003: 2010
     end
     toc;
 end
-for i = 2: 584
-   IceP_all(:, i) = IceP_all(:, i) + IceP_all(:, i - 1);
+IceP_all_Year = IceP_all;
+IceH_all_Day = IceH_all;
+IceH_all_Year = IceH_all;
+for i = 1: 8
+    for j = ((73*(i-1)) + 2): (73*i)
+        IceP_all_Year(:, j) = IceP_all_Year(:, j) + IceP_all_Year(:, j - 1);
+    end   
 end
-save('IceH_all', 'IceH_all');
+for i = linspace(365/5*8, 2, 365/5*8-1)
+   IceH_all_Day(:, i) = IceH_all_Day(:, i) - IceH_all_Day(:, i - 1); 
+end
+for i = 2: 8
+    for j = ((73*(i-1)) + 2): (73*i)
+        IceH_all_Year(:, j) = IceH_all_Year(:, j) - IceH_all_Year(:, ((73*(i-1)) + 1));
+    end   
+    IceH_all_Year(:, ((73*(i-1)) + 1)) = zeros(8, 1);
+end
+clear IceH_all;
+save('IceH_all_Year', 'IceH_all_Year');
+save('IceH_all_Day', 'IceH_all_Day');
+save('IceP_all_Year', 'IceP_all_Year');
 save('IceP_all', 'IceP_all');

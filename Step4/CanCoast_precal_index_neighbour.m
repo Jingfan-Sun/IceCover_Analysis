@@ -5,6 +5,7 @@ close all;
 D = importdata('/home/jingfan/Step3/unified-sea-ice-thickness-cdr-1947-2012/CanCoast_summaries_1947_2010_v1.txt');
 tmask_12 = GetNcVar('/mnt/storage0/xhu/CREG012-I/mask/CREG12_mask_v34.nc','tmask',[0 0 0 0],[1632 2400 1 1]);  % surface land mask
 tmask_4 = GetNcVar('/mnt/storage0/xhu/CREG025-I/mesh_mask_creg025.nc','tmask',[0 0 0],[544 800 1]);  % surface land mask
+m_proj('stereographic','latitude',70,'lon',-90, 'radius',20);
 [row, col] = size(D.data);
 
 %% Find same campaign
@@ -36,8 +37,8 @@ Avg_ic = D.data(:, 23);
 
 %% Initialization
 [~, length] = size(campaign_Index);
-IceH_all = zeros(8, 365/5*8);
-IceP_all = zeros(8, 365/5*8);
+IceH_all = zeros(8, 365/5*9);
+IceP_all = zeros(8, 365/5*9);
 % record the neighbour index of each point on the track
 neighbour_Index_12 = zeros(8, 9);
 inverseDistance_all = zeros(8, 9);
@@ -49,7 +50,7 @@ for i = 1: length - 1
     jj = 1;
     for k = 1: numel(campaign_Year{1, i})
         tic;
-        if(campaign_Year{1, i}(k) < 2003 || campaign_Year{1, i}(k) > 2010)
+        if(campaign_Year{1, i}(k) < 2002 || campaign_Year{1, i}(k) > 2010)
             continue;
         end
         data_Position(jj) = k;
@@ -92,10 +93,10 @@ for i = 1: length - 1
     ii = ii + 1;
     disp(campaign_Name{i});
 end
-date = num2date(2003, 5);
+date = num2date(2002, 5);
 ncfile=[srcP,'CREG012-EXH003_y',date,'_icemod.nc']; % 12th
 iceC_first=GetNcVar(ncfile,'iicethic',[subII(1)-1 subJJ(1)-1 0],[numel(subII) numel(subJJ) 1]);
-for yearCounter = 2003: 2010
+for yearCounter = 2002: 2010
     tic;
     for timeCounter = 5: 5: 365
         date = num2date(yearCounter, timeCounter);
@@ -114,15 +115,32 @@ for yearCounter = 2003: 2010
                     point_iceP = point_iceP + iceP(neighbour_Index_12(jj, kk)) * inverseDistance_all(jj, kk) / sum_Distance;
                 end
             end
-            IceH_all(jj, (timeCounter / 5 + (yearCounter - 2003) * 365/5)) = point_iceC;
-            IceP_all(jj, (timeCounter / 5 + (yearCounter - 2003) * 365/5)) = point_iceP;
+            IceH_all(jj, (timeCounter / 5 + (yearCounter - 2002) * 365/5)) = point_iceC;
+            IceP_all(jj, (timeCounter / 5 + (yearCounter - 2002) * 365/5)) = point_iceP;
         end
         timeCounter
     end
     toc;
 end
-for i = 2: 584
-   IceP_all(:, i) = IceP_all(:, i) + IceP_all(:, i - 1);
+IceP_all_Year = IceP_all;
+IceH_all_Day = IceH_all;
+IceH_all_Year = IceH_all;
+for i = 1: 9
+    for j = ((73*(i-1)) + 2): (73*i)
+        IceP_all_Year(:, j) = IceP_all_Year(:, j) + IceP_all_Year(:, j - 1);
+    end   
 end
-save('IceH_all', 'IceH_all');
+for i = linspace(365/5*9, 2, 365/5*9-1)
+   IceH_all_Day(:, i) = IceH_all_Day(:, i) - IceH_all_Day(:, i - 1); 
+end
+for i = 2: 9
+    for j = ((73*(i-1)) + 2): (73*i)
+        IceH_all_Year(:, j) = IceH_all_Year(:, j) - IceH_all_Year(:, ((73*(i-1)) + 1));
+    end   
+    IceH_all_Year(:, ((73*(i-1)) + 1)) = zeros(8, 1);
+end
+clear IceH_all;
+save('IceH_all_Year', 'IceH_all_Year');
+save('IceH_all_Day', 'IceH_all_Day');
+save('IceP_all_Year', 'IceP_all_Year');
 save('IceP_all', 'IceP_all');

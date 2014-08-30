@@ -40,8 +40,10 @@ Avg_ic = D.data(:, 23);
 neighbour_Index_12 = zeros(8, 9);
 inverseDistance_all = zeros(8, 9);
 ii = 1;
-load IceH_all;
+load IceH_all_Year;
 load IceP_all;
+load IceP_all_Year;
+load IceH_all_Day;
 valid_plotIndex = 1; % used for plotting production plots
 %% Calculate track data for later plot
 for i = 1: length - 1
@@ -49,7 +51,7 @@ for i = 1: length - 1
     jj = 1;
     for k = 1: numel(campaign_Year{1, i})
         tic;
-        if(campaign_Year{1, i}(k) < 2003 || campaign_Year{1, i}(k) > 2010)
+        if(campaign_Year{1, i}(k) < 2002 || campaign_Year{1, i}(k) > 2010)
             continue;
         end
         data_Position(jj) = k;
@@ -63,7 +65,7 @@ for i = 1: length - 1
     figure;
     set(gcf, 'Position', [560 524 560 700]);
     %% Line plot
-    subplot(211);
+    subplot(311);
     x = 1: numel(data_Position);
     % Date used for the X-Axis
     date_X = zeros(1, numel(x));
@@ -223,22 +225,46 @@ for i = 1: length - 1
     y1 = zeros(1, xLimit(2) + xLimit_up);
     YLim_plot = get(gca, 'YLim');
     disp(['ANHA12 finished ', num2str(i)]);
-    %% Production plot
-    subplot(212);
-    p4 = plot(1: 584, IceH_all(valid_plotIndex, :), '-g', 'LineWidth', 2);
+    %% Production plot 1
+    subplot(312);
+    p4 = plot(1: 365/5*9, IceH_all_Day(valid_plotIndex, :), '-g', 'LineWidth', 1.5);
     hold on;
-    p5 = plot(1: 584, IceP_all(valid_plotIndex, :), '-m', 'LineWidth', 2);
+    p5 = plot(1: 365/5*9, IceP_all(valid_plotIndex, :), '-m', 'LineWidth', 1.5);
     grid on;
-    xtick_Char_P = cell(1, 7);
-    xtick_Char_P{1} = num2date(2003, 5);
-    for j = 2:7
-        xtick_Char_P{j} = num2date(((j-1)*500-rem((j-1)*500, 365))/365+2003, rem((j-1)*500, 365));
+    xLimit = get(gca, 'XLim');
+    xLimit_up = round(xLimit(2) / 3.5);
+    set(gca, 'XLim', [0, xLimit(2) + xLimit_up]);
+    xtick_Char_P = cell(1, 9);
+    xtick_Char_P{1} = num2date(2002, 5);
+    for j = 2:9
+        xtick_Char_P{j} = num2date(((j-1)*500-rem((j-1)*500, 365))/365+2002, rem((j-1)*500, 365));
     end
     set(gca,'xTicklabel', xtick_Char_P);
-    legend([p4 p5], 'Thickness','Production','Location', 'NorthWest');
+    legend([p4 p5], 'Thickness','Production','Location', 'NorthEast');
     xlabel('Date', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
     ylabel('Thickness /m', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
-    set(gca,'fontweight','bold','fontsize',7,'fontname','Nimbus Sans L');
+    set(gca,'fontweight','bold','fontsize',5,'fontname','Nimbus Sans L');
+    
+    %% Production plot 2
+    subplot(313);
+    p6 = plot(1: 365/5*9, IceH_all_Year(valid_plotIndex, :), '-g', 'LineWidth', 2);
+    hold on;
+    p7 = plot(1: 365/5*9, IceP_all_Year(valid_plotIndex, :), '-m', 'LineWidth', 2);
+    grid on;
+    xLimit = get(gca, 'XLim');
+    xLimit_up = round(xLimit(2) / 3.5);
+    set(gca, 'XLim', [0, xLimit(2) + xLimit_up]);
+    xtick_Char_P = cell(1, 9);
+    xtick_Char_P{1} = num2date(2002, 5);
+    for j = 2:9
+        xtick_Char_P{j} = num2date(((j-1)*500-rem((j-1)*500, 365))/365+2002, rem((j-1)*500, 365));
+    end
+    set(gca,'xTicklabel', xtick_Char_P);
+    legend([p6 p7], 'Thickness','Production','Location', 'NorthEast');
+    xlabel('Date', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
+    ylabel('Thickness /m', 'fontweight','bold','fontsize', 10,'fontname','Nimbus Sans L');
+    set(gca,'fontweight','bold','fontsize',5,'fontname','Nimbus Sans L');
+    
     toc;
     valid_plotIndex = valid_plotIndex + 1;
     % set(gcf,'paperPositionMode','auto'); % print the figure with the same size in matlab
