@@ -52,9 +52,9 @@ for i = 1: length-1
     end
     % Delete the extra 0s in the end of the array
     data_Position(data_Position == 0) = [];
-    if(~strcmp(campaign_Name{i}, 'YCB'))
-       continue; 
-    end
+%     if(~strcmp(campaign_Name{i}, 'YCB'))
+%        continue; 
+%     end
     
 %     if(~strcmp(campaign_Name{i}, 'YUX'))
 %        continue; 
@@ -251,9 +251,9 @@ for i = 1: length-1
 %     YLim_plot = get(gca, 'YLim');
 %     disp(['ANHA12 finished ', num2str(i)]);
     %% Map plot
-%     m_proj('stereographic','latitude',70,'lon',-90, 'radius',20);
-    m_proj('lambert','latitude', [65 73],...
-        'longtitude', [-95 -115], 'rect', 'on'); % YCB
+    m_proj('stereographic','latitude',70,'lon',-90, 'radius',20);
+%    m_proj('lambert','latitude', [65 73],...
+%        'longtitude', [-95 -115], 'rect', 'on'); % YCB
 %     m_proj('lambert','latitude', [65 73],...
 %          'longtitude', [-70 -90], 'rect', 'on'); % YUX
     m_grid;
