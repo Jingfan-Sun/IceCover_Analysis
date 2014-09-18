@@ -7,7 +7,7 @@ name_Array = {'fm04', 'fm05', 'fm06', 'fm08', 'ma07', 'on03', 'on04', 'on05', 'o
 bins = 0:0.2:8; % in 0.2 thick bins
 total_Area_Sum = zeros(1, numel(bins) - 1); % Total ice among certain periad
 isProj = 1;
-a = 4;
+a = 10;
 %% Salellite
 subplot(311);
 for i = a
