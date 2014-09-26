@@ -130,6 +130,7 @@ for i = 2: length - 1
     track_ANHA12 = zeros(size(x)); % data from ANHA4
     track_shear = zeros(size(x)); % shear deformation along the track
     for j = 1: (campaign_Index(i + 1) - campaign_Index(i))
+	disp([num2str(j), '/', num2str(campaign_Index(i + 1) - campaign_Index(i))]);
         % Calculate the data
         yearCounter = campaign_Year(i);
         timeCounter = 5 * round(Yday(campaign_Index(i) + j - 1) / 5);
@@ -145,7 +146,7 @@ for i = 2: length - 1
         % shear deformation
         timeCounter = timeCounter + 5;
         shear_deformation = zeros(2398, 1630);
-        for k = 1:6
+        for k = 1:7
             timeCounter = timeCounter - 5;
             date = num2date(yearCounter, timeCounter);
             ncfile=[srcP,'CREG012-EXH003_y',date,'_icemod.nc']; % 12th
@@ -195,8 +196,8 @@ for i = 2: length - 1
         lon_120 = lon_12(2: 2400 - 1, 2: 1632 - 1);
         lat_120 = lat_12(2: 2400 - 1, 2: 1632 - 1);
         [result,index]=sort((lat_120(:) - lat_Temp(j)).*(lat_120(:) - lat_Temp(j)) + (lon_120(:) - lon_Temp(j)).*(lon_120(:) - lon_Temp(j)));
-        inverseDistance = zeros(1,9);
-        for k = 1:9
+        inverseDistance = zeros(1,25);
+        for k = 1:25
             if(shear_deformation(index(k)) ~= 0)
                 inverseDistance(1,k) = 1 / sum((m_ll2xy(lon_Temp(j), lat_Temp(j)) - m_ll2xy(lon_12(index(k)), lat_12(index(k)))) .^ 2);
             else
@@ -204,7 +205,7 @@ for i = 2: length - 1
             end
         end
         sum_Distance = sum(inverseDistance);
-        for k = 1:9
+        for k = 1:25
             if(inverseDistance(1,k) ~= 0)
                 track_shear(j) = track_shear(j) + shear_deformation(index(k)) * inverseDistance(1, k) / sum_Distance;
             end
@@ -271,7 +272,7 @@ for i = 2: length - 1
     xlabel('Distance /km');
     ylabel('Thickness /m');
     % title
-    title = title(['FILE: AIR-EM_summaries_2001_2009_v1 TRACK: ', campaign_Name{i}, ' ', num2str(campaign_Year(i))], 'fontweight','bold','fontsize', 12,'fontname','Nimbus Sans L');
+    title = title(['FILE: AIR-EM TRACK: ', campaign_Name{i}, ' ', num2str(campaign_Year(i)), ' around ', date], 'fontweight','bold','fontsize', 12,'fontname','Nimbus Sans L');
     set(title,'Interpreter','none');
     xLimit = get(gca, 'XLim');
     xLimit_up = round(xLimit(2) / 3.5);
@@ -341,7 +342,7 @@ for i = 2: length - 1
     % m_proj('albers equal-area','longitudes',[lon_Temp(min_Lon) - 10, lon_Temp(max_Lon) + 10], ...
     %    'latitudes',[lat_Temp(min_Lat) - 5, lat_Temp(max_Lat) + 5],'rect','on');
     m_proj('lambert','latitude', [lat_Temp(min_Lat) - 5, lat_Temp(max_Lat) + 5],...
-        'longtitude', [lon_Temp(min_Lon) - 10, lon_Temp(max_Lon) + 10], 'rect', 'on');
+        'longtitude', [lon_Temp(min_Lon) - 20, lon_Temp(max_Lon) + 20], 'rect', 'on');
     hp=m_pcolor(lon_12, lat_12, shear_deformation);set(hp,'linestyle','none');
     m_grid;
     disp(['grid finish ', num2str(i)]);
@@ -447,8 +448,9 @@ for i = 2: length - 1
     %         end
     %     end
     toc;
+    % set(gcf, 'visible', 'off');
 %     set(gcf,'paperPositionMode','auto'); % print the figure with the same size in matlab
-        print(gcf, '-dpng' ,'-r300',['Shear_AIR-EM_summaries_2001_2009_v1_', campaign_Name{i}, '.png']);
+        print(gcf, '-dpng' ,'-r300',['Shear_25_AIR-EM_summaries_2001_2009_v1_', campaign_Name{i}, '.png']);
 end
 
 % for i = 1:length-1
