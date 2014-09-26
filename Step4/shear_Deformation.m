@@ -25,15 +25,14 @@ lat_12 = GetNcVar(ncfile,'nav_lat',[0 0],[NX, NY]);
 lon_12 = lon_12(2: NY - 1, 2: NX - 1);
 lat_12 = lat_12(2: NY - 1, 2: NX - 1);
 yearCounter = 2003;
-timeCounter = 5: 5: 365;
+timeCounter = 80;
 for i = timeCounter
     date = num2date(yearCounter, i);
     ncfile=[srcP,'CREG012-EXH003_y',date,'_icemod.nc']; % 12th
     subII=1:1632; subJJ=1:2400;
     u = GetNcVar(ncfile,'iicevelu',[subII(1)-1 subJJ(1)-1 0],[numel(subII) numel(subJJ) 1]);
     v = GetNcVar(ncfile,'iicevelv',[subII(1)-1 subJJ(1)-1 0],[numel(subII) numel(subJJ) 1]);
-    u(u == 0) = NaN;
-    v(v == 0) = NaN;
+    
     du = zeros(NY, NX - 2);
     u_x = zeros(NY, NX - 2);
     u_y = zeros(NY, NX - 2);
@@ -110,9 +109,9 @@ for i = timeCounter
     % set(gca, 'CLimMode', 'auto');
     set(hbar,'position',[0.9 0.1055 0.02 0.8203]);
     
-    set(gcf, 'visible', 'off');
+    set(gcf, 'visible', 'on');
     xlabel(['Shear Deformation on ', date, ' ', configuration, ' Degree'],'fontweight','bold','fontsize',12,'fontname','Nimbus Sans L');
-    print(gcf, '-dpng', '-r300' ,['Shear_Deformation_', date, '_', configuration,'_Degree','.png']);
+%     print(gcf, '-dpng', '-r300' ,['Shear_Deformation_', date, '_', configuration,'_Degree','.png']);
     
     disp(['Finish: ', num2str(i / 3.65)]);
 end
