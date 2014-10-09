@@ -183,7 +183,7 @@ else
   hsub(2)=subplot(1,2,2);
   m_proj('stereographic','lat',71,'radius',20,'long',-90,'rect','on','rotation',-35)
 %   m_proj('stereographic','latitude',80,'radius',[-90 40],'rotangle',60,'rect','on')
-  hp=m_pcolor(navLon,navLat,iceH2-iceH1); set(hp,'linestyle','none','facecolor','interp');
+  hp=m_pcolor(navLon,navLat,iceH2-iceH1-iceP); set(hp,'linestyle','none','facecolor','interp');
   if coastType>0
      fillType='patch';
   else
@@ -236,7 +236,7 @@ else
   set(hsub(2), 'position', [0.57 0.03 0.3 0.9])
 end
 set(gcf, 'paperPosition', [0.25 2.5 10 5]);
-print(gcf, '-dpng', '-r300', ['iceP_vs_totalIceHChange_',num2str(YS),'_',monStr,'.png']);
+print(gcf, '-dpng', '-r300', ['slide_iceP_vs_totalIceHChange_',num2str(YS),'_',monStr,'.png']);
 
 if isSave==1
    maxWIN;

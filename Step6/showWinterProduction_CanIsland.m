@@ -1,4 +1,4 @@
-function showWinterProduction(YS,YE,monSelect,varargin)
+function showWinterProduction_CanIsland(YS,YE,monSelect,varargin)
 % show the accumulated ice production map
 % usage:
 %       showWinterProduction(YS,YE,monSelect)
@@ -168,7 +168,7 @@ else
   set(hxlabel([3 4 5]),'rotation',0)
   movePostion(hylabel([1 2]),0.04,'y')
   movePostion(hxlabel(5),-0.11,'x')
-  t1 = title(['Ice Production ',num2str(YS),' ',monStr], 'fontweight','bold','fontsize', 12,'fontname','Nimbus Sans L');
+  t1 = title(['Thermodynamic Change ',num2str(YS),' ',monStr], 'fontweight','bold','fontsize', 12,'fontname','Nimbus Sans L');
   set(t1,'Interpreter','none');
   set(t1,'Position',get(t1,'Position') + [0 0.07 0]);
 %   pos0=get(hxlabel(12),'position');
@@ -183,7 +183,7 @@ else
   hsub(2)=subplot(1,2,2);
   m_proj('stereographic','lat',71,'radius',20,'long',-90,'rect','on','rotation',-35)
 %   m_proj('stereographic','latitude',80,'radius',[-90 40],'rotangle',60,'rect','on')
-  hp=m_pcolor(navLon,navLat,iceH2-iceH1); set(hp,'linestyle','none','facecolor','interp');
+  hp=m_pcolor(navLon,navLat,iceH2-iceH1-iceP); set(hp,'linestyle','none','facecolor','interp');
   if coastType>0
      fillType='patch';
   else
@@ -220,7 +220,7 @@ else
   set(hxlabel([3 4 5]),'rotation',0)
   movePostion(hylabel([1 2]),0.04,'y')
   movePostion(hxlabel(5),-0.11,'x')
-  t2 = title(['Total IceThickness Change ',num2str(YS),' ',monStr], 'fontweight','bold','fontsize', 12,'fontname','Nimbus Sans L');
+  t2 = title(['Dynamic Change ',num2str(YS),' ',monStr], 'fontweight','bold','fontsize', 12,'fontname','Nimbus Sans L');
   set(t2,'Interpreter','none');
   set(t2,'Position',get(t2,'Position') + [0 0.07 0]);
 %   pos0=get(hxlabel(12),'position');
@@ -236,7 +236,7 @@ else
   set(hsub(2), 'position', [0.57 0.03 0.3 0.9])
 end
 set(gcf, 'paperPosition', [0.25 2.5 10 5]);
-print(gcf, '-dpng', '-r300', ['iceP_vs_totalIceHChange_',num2str(YS),'_',monStr,'.png']);
+print(gcf, '-dpng', '-r300', ['slide_iceP_vs_totalIceHChange_',num2str(YS),'_',monStr,'.png']);
 
 if isSave==1
    maxWIN;
